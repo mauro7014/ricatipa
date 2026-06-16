@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Header } from './components/layout/Header'
 import { Footer } from './components/layout/Footer'
 import { Home } from './pages/Home'
+import { Materiales } from './pages/Materiales'
+import { Nosotras } from './pages/Nosotras'
 import { AdminLogin } from './pages/AdminLogin'
 import { AdminPanel } from './pages/AdminPanel'
 import { WhatsAppButton } from './components/ui/WhatsAppButton'
@@ -14,13 +16,13 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   return isAdmin ? <>{children}</> : <Navigate to="/admin" replace />
 }
 
-function ShopLayout() {
+function ShopLayout({ children }: { children: ReactNode }) {
   const [cartOpen, setCartOpen] = useState(false)
   return (
     <div className="min-h-screen flex flex-col bg-linen">
       <Header onCartOpen={function() { setCartOpen(true) }} />
       <main className="flex-1">
-        <Home />
+        {children}
       </main>
       <Footer />
       <WhatsAppButton />
@@ -33,7 +35,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<ShopLayout />} />
+        <Route path="/" element={<ShopLayout><Home /></ShopLayout>} />
+        <Route path="/materiales" element={<ShopLayout><Materiales /></ShopLayout>} />
+        <Route path="/nosotras" element={<ShopLayout><Nosotras /></ShopLayout>} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/panel" element={
           <ProtectedRoute>

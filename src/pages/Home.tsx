@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { products } from '../data/products'
 import type { Product } from '../types'
 import { formatPrice } from '../data/products'
@@ -12,6 +12,15 @@ export function Home() {
   const [selectedSize, setSelectedSize] = useState<string>('')
   const [activeCategory, setActiveCategory] = useState<string>('todos')
   const { addItem } = useCart()
+
+  useEffect(function() {
+    function handleFilter(e: Event) {
+      const cat = (e as CustomEvent).detail
+      setActiveCategory(cat)
+    }
+    window.addEventListener('filter-category', handleFilter)
+    return function() { window.removeEventListener('filter-category', handleFilter) }
+  }, [])
 
   function handleAddToCart() {
     if (!selected || !selectedSize) return
