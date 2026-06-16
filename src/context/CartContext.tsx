@@ -1,4 +1,5 @@
-import { createContext, useReducer, ReactNode, Dispatch } from 'react'
+import { createContext, useReducer } from 'react'
+import type { ReactNode, Dispatch } from 'react'
 import type { CartState, CartAction, CartItem } from '../types'
 
 const initialState: CartState = {
