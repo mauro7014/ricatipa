@@ -5,6 +5,8 @@ import { Home } from './pages/Home'
 import { AdminLogin } from './pages/AdminLogin'
 import { AdminPanel } from './pages/AdminPanel'
 import { WhatsAppButton } from './components/ui/WhatsAppButton'
+import { CartDrawer } from './components/cart/CartDrawer'
+import { useState } from 'react'
 import type { ReactNode } from 'react'
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -13,14 +15,16 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
 }
 
 function ShopLayout() {
+  const [cartOpen, setCartOpen] = useState(false)
   return (
     <div className="min-h-screen flex flex-col bg-linen">
-      <Header onCartOpen={function() {}} />
+      <Header onCartOpen={function() { setCartOpen(true) }} />
       <main className="flex-1">
         <Home />
       </main>
       <Footer />
       <WhatsAppButton />
+      <CartDrawer isOpen={cartOpen} onClose={function() { setCartOpen(false) }} />
     </div>
   )
 }
