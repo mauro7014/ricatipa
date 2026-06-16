@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
-import { products } from '../data/products'
 import type { Product } from '../types'
 import { formatPrice } from '../data/products'
 import { ShoppingBag, X, ZoomIn } from 'lucide-react'
 import { useCart } from '../hooks/useCart'
+import { useStore } from '../context/StoreContext'
 
 const categories = ['todos', 'vestidos', 'blusas', 'pantalones', 'faldas', 'abrigos', 'accesorios']
 
 export function Home() {
+  const { store } = useStore()
   const [selected, setSelected] = useState<Product | null>(null)
   const [selectedSize, setSelectedSize] = useState<string>('')
   const [activeCategory, setActiveCategory] = useState<string>('todos')
@@ -35,20 +36,20 @@ export function Home() {
       {/* HERO 65vh */}
       <div className="relative w-full" style={{ height: '65vh' }}>
         <img
-          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80"
+          src={store.heroImage}
           alt="RICATIPA"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-transparent to-ink/60" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <p className="font-sans text-[10px] tracking-[0.4em] uppercase text-linen/70 mb-3">
-            Nueva colección
+            {store.heroTag}
           </p>
           <h1 className="font-display text-5xl md:text-7xl font-light text-linen tracking-widest mb-4">
-            RICATIPA
+            {store.heroTitle}
           </h1>
           <p className="font-sans text-xs tracking-widest uppercase text-linen/60">
-            Moda artesanal y sostenible
+            {store.heroSubtitle}
           </p>
         </div>
       </div>
@@ -78,7 +79,7 @@ export function Home() {
       {/* GALERÍA HORIZONTAL */}
       <div className="px-6 pb-10">
         <div className="flex gap-4 overflow-x-scroll hide-scrollbar pb-4" style={{ scrollSnapType: 'x mandatory' }}>
-          {products.map(function(product) {
+          {store.products.map(function(product) {
             const isActive = activeCategory === 'todos' || product.category === activeCategory
             return (
               <div
