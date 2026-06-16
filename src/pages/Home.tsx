@@ -5,9 +5,12 @@ import { formatPrice } from '../data/products'
 import { ShoppingBag, X, ZoomIn } from 'lucide-react'
 import { useCart } from '../hooks/useCart'
 
+const categories = ['todos', 'vestidos', 'blusas', 'pantalones', 'faldas', 'abrigos', 'accesorios']
+
 export function Home() {
   const [selected, setSelected] = useState<Product | null>(null)
   const [selectedSize, setSelectedSize] = useState<string>('')
+  const [activeCategory, setActiveCategory] = useState<string>('todos')
   const { addItem } = useCart()
 
   function handleAddToCart() {
@@ -20,6 +23,7 @@ export function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-linen">
 
+      {/* HERO 65vh */}
       <div className="relative w-full" style={{ height: '65vh' }}>
         <img
           src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80"
@@ -40,18 +44,47 @@ export function Home() {
         </div>
       </div>
 
-      <div className="py-10 px-6">
-        <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-stone mb-6">
-          Colección
-        </p>
+      {/* FILTRO CATEGORÍAS */}
+      <div className="px-6 pt-10 pb-4">
+        <div className="flex gap-3 overflow-x-scroll hide-scrollbar">
+          {categories.map(function(cat) {
+            return (
+              <button
+                key={cat}
+                onClick={function() { setActiveCategory(cat) }}
+                className={
+                  'flex-shrink-0 font-sans text-[10px] tracking-widest uppercase px-4 py-2 border transition-all duration-300 ' +
+                  (activeCategory === cat
+                    ? 'border-ink bg-ink text-linen'
+                    : 'border-sand text-stone hover:border-bark hover:text-bark')
+                }
+              >
+                {cat}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* GALERÍA HORIZONTAL */}
+      <div className="px-6 pb-10">
         <div className="flex gap-4 overflow-x-scroll hide-scrollbar pb-4" style={{ scrollSnapType: 'x mandatory' }}>
           {products.map(function(product) {
+            const isActive = activeCategory === 'todos' || product.category === activeCategory
             return (
               <div
                 key={product.id}
-                className="flex-shrink-0 relative cursor-pointer group"
-                style={{ width: '280px', height: '380px', scrollSnapAlign: 'start' }}
-                onClick={function() { setSelected(product); setSelectedSize('') }}
+                className="flex-shrink-0 relative cursor-pointer group transition-all duration-500"
+                style={{
+                  width: '280px',
+                  height: '380px',
+                  scrollSnapAlign: 'start',
+                  opacity: isActive ? 1 : 0.3,
+                  transform: isActive ? 'scale(1)' : 'scale(0.97)',
+                }}
+                onClick={function() {
+                  if (isActive) { setSelected(product); setSelectedSize('') }
+                }}
               >
                 <div className="w-full h-full overflow-hidden bg-sand">
                   <img
@@ -62,11 +95,13 @@ export function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
                 </div>
 
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="bg-linen/20 backdrop-blur-sm p-2">
-                    <ZoomIn size={14} className="text-linen" strokeWidth={1.5} />
+                {isActive && (
+                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="bg-linen/20 backdrop-blur-sm p-2">
+                      <ZoomIn size={14} className="text-linen" strokeWidth={1.5} />
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="absolute bottom-0 left-0 right-0 p-4">
                   <p className="font-sans text-[9px] tracking-widest uppercase text-linen/60 mb-1">
@@ -85,6 +120,7 @@ export function Home() {
         </div>
       </div>
 
+      {/* MODAL PRODUCTO */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
